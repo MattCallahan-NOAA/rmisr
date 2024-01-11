@@ -1,0 +1,11 @@
+Package: rmisr
+Type: Package
+Title: Download Data from the RMPC RMIS api. 
+Version: 0.1.0
+Author: Matt Callaha
+Maintainer: The package maintainer <matt.callahan@noaa.gov>
+Description: This package pulls code wire tag data from the RMIS database through their api. Each function pulls data from a different RMIS table. Synatax is consitent across these functions. An api key is required. Other arguements will be passed to the api as parameters. Reducing the size of data pulls by passing parameters to your functions is strongly encouraged, and necessary in the case of get_recovery().
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
+Imports: httr, jsonlite, magrittr, dplyr
