@@ -15,9 +15,9 @@ get_release<-function(token=NA, ...) {
   # function to determine the number of pages needed
   get_totalCount<-function(token, ...) {
     query<-list(...=...)
-    content(
-      GET(url, query=query, add_headers(xapikey=token)) %>%
-        stop_for_status())$totalCount
+    httr::content(
+      httr::GET(url, query=query, httr::add_headers(xapikey=token)) %>%
+        httr::stop_for_status())$totalCount
   }
 
   #function to pull by page 1000 records at time
@@ -25,10 +25,10 @@ get_release<-function(token=NA, ...) {
     query<-list(page=page,
                 perpage=1000,
                 ...=...)
-    fromJSON(content(
-      GET(url, query=query, add_headers(xapikey=token)) %>%
-        stop_for_status(), type= "text"))$records %>%
-      bind_rows()
+    jsonlite::fromJSON(httr::content(
+      httr::GET(url, query=query, httr::add_headers(xapikey=token)) %>%
+        httr::stop_for_status(), type= "text"))$records %>%
+      dplyr::bind_rows()
   }
 
   # determine record count and number of pages needed
@@ -42,7 +42,7 @@ get_release<-function(token=NA, ...) {
   # apply the api pull function across the number of pages
   data<-suppressMessages(lapply(1:npage, FUN=function(x) {get_by_page(token=token,
                                                                            page=x,
-                                                                           ...)})%>%bind_rows())
+                                                                           ...)})%>%dplyr::bind_rows())
   # time
   end_time<-Sys.time()
   message(paste("Time Elapsed:", round(end_time - start_time, 2),

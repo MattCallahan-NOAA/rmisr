@@ -1,0 +1,95 @@
+---
+output: github_document
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+## rmisr
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+This package provides functions to download data from the [RMIS api](https://github.com/PSMFC-Streamnet-RMPC/api-docs) . 
+Data documentation can be found here (what is the best link?) and users should be familiar with data structure before attempting to download it.
+Each function pulls data from a different RMIS table. An api key is required for use and other function arguments will be passed to the api as parameters. Reducing the size of data pulls by passing parameters to your functions is strongly encouraged, and necessary in the case of get_recovery().
+The four functions are get_location(), get_release(), get_recovery() and get_catchsample(). Each are covered below but have common syntax.
+
+This package uses the httr and jsonlite packages to do the api pull and the dplyr package to bind json list output into a data frame in R. 
+
+The RMIS api uses pagination to control data pull size. 
+These functions get all data requested by 1) determining the total count of records available in a query.
+2) calculating the number of pages needed with records per page set to 1000 (max allowed), and 
+3) applying an api pull function to each needed page. 
+
+
+## Installation
+``` {r, eval=FALSE}
+ devtools::install_github("MattCallahan-NOAA/rmisr")
+```
+
+## Authentication
+
+In order to use this package you will need to reach out to RMCP to get an api key. Save the key in your working environment.
+
+```{r message = FALSE}
+library(rmisr)
+library(httr)
+library(jsonlite)
+library(dplyr)
+library(magrittr)
+
+token<-"your-api-key"
+
+```
+
+## Location
+This function pulls location information. There are 39k+ location records so downloading the whole dataset shouldn't take more than a minute.
+
+```{r }
+## get type 2  locations reported by ADFG
+adfg2<-get_location(token=token, reporting_agency="ADFG", location_type=2)
+
+head(adfg2)
+```
+
+## Release
+
+Most functions require survey_definition_id, area_id, species_code, start_year, and end_year as parameters. 
+In order to correctly define these parameters, first download several lookup tables. 
+The full table has ~180k records. 
+
+```{r }
+## get chinook releases for 1990 reported by ADFG
+adfg1990_rel<-get_release(token=token, reporting_agency="ADFG", brood_year=1990)
+
+head(adfg1990_rel)
+```
+
+## Recovery
+The recovery table has over ten million records. I put a cap of 500k records on this function but if you really want all of the data you can loop it by run year. 
+
+```{r}
+## get chinook recovery for 1990 reported by ADFG of species 1
+adfg1990_rec<-get_recovery(token=token, reporting_agency="ADFG", run_year=1990, species = 1)
+
+head(adfg1990_rec)
+```
+
+
+## Catchsample
+
+The get_catchsample() function pulls data from the catchsample table. This table has about 480k records, results should definitely be filtered if at all possible.
+
+```{r}
+## get chinook catch samples for 1990 reported by ADFG of species 1
+adfg1990_c<-get_catchsample(token=token, reporting_agency="ADFG", catch_year=1990, species = 1)
+
+head(adfg1990_c)
+```
