@@ -12,9 +12,8 @@
 get_location <- function(token=NA, ...) {
   start_time <- Sys.time()
   url <- "https://phish.rmis.org/location"
-  
+
   get_totalCount <- function(token, ...) {
-    url <- "https://phish.rmis.org/location"
     query <- list(... = ...)
     response <- GET(url, query = query, add_headers(xapikey = token))
 
@@ -32,11 +31,10 @@ get_location <- function(token=NA, ...) {
       return(content(response)$totalCount)
     }
   }
-  
-  
+
+
   #function to pull by page 1000 records at time
   get_by_page <- function(token = NA, page = 1, ...) {
-    url <- "https://phish.rmis.org/location"
     query <- list(page = page, perpage = 1000, ... = ...)
     response <- GET(url, query = query, add_headers(xapikey = token))
 
@@ -45,7 +43,7 @@ get_location <- function(token=NA, ...) {
       # Extract and parse content from the response
       content <- content(response, "text", encoding = "UTF-8")
       error_info <- fromJSON(content)
-      
+
       # Extract only the main error message
       main_error_message <- error_info$message
       # Suppress fxn info printing when stop
@@ -59,7 +57,7 @@ get_location <- function(token=NA, ...) {
 
   # determine record count and number of pages needed
   totalcount <- suppressMessages(get_totalCount(token = token, ...))
-  
+
   numberpages <- ceiling(totalcount / 1000)
 
   # write message for the potentially slow function
