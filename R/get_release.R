@@ -8,7 +8,7 @@
 #' ## get chinook releases for 1990 reported by ADFG
 #' adfg1990<-get_release(token="your-api-key", reporting_agency="ADFG", brood_year=1990)
 
-get_release<-function(token=NA, ...) {
+get_release<-function(token=NA, only_count = FALSE, ...) {
   start_time <- Sys.time()
   url <- "https://phish.rmis.org/release"
 
@@ -60,6 +60,11 @@ get_release<-function(token=NA, ...) {
   if (totalcount == 0) {
     message("No records found.")
     return(data.frame()) # Returning an empty data frame if no records are found
+  }
+
+  if (only_count) {
+    # If only the count is requested, return here
+    return(totalcount)
   }
 
   numberpages <- ceiling(totalcount / 1000)
