@@ -58,6 +58,11 @@ get_location <- function(token=NA, ...) {
   # determine record count and number of pages needed
   totalcount <- suppressMessages(get_totalCount(token = token, ...))
 
+  if (totalcount == 0) {
+    message("No records found.")
+    return(data.frame()) # Returning an empty data frame if no records are found
+  }
+
   numberpages <- ceiling(totalcount / 1000)
 
   # write message for the potentially slow function
