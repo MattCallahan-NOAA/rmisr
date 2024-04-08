@@ -11,7 +11,7 @@
 #' ## get chinook recovery for 1990 reported by ADFG of species 1
 #' adfg1990<-get_recovery(token="your-api-key", reporting_agency="ADFG", run_year=1990, species = 1)
 
-get_recovery<-function(token=NA, ...) {
+get_recovery<-function(token=NA, only_count = FALSE, ...) {
 
   start_time<-Sys.time()
   url<-"https://phish.rmis.org/recovery"
@@ -60,6 +60,16 @@ get_recovery<-function(token=NA, ...) {
 
   # determine record count and number of pages needed
   totalcount<-suppressMessages(get_totalCount(token=token, ...))
+
+  if (totalcount == 0) {
+    message("No records found.")
+    return(data.frame()) # Returning an empty data frame if no records are found
+  }
+
+  if (only_count) {
+    # If only the count is requested, return here
+    return(totalcount)
+  }
 
   numberpages<-ceiling(totalcount/1000)
 

@@ -9,7 +9,7 @@
 #' adfg2<-get_locaton(token="your-api-key", reporting_agency="ADFG", location_type=2)
 
 
-get_location <- function(token=NA, ...) {
+get_location <- function(token=NA, only_count = FALSE, ...) {
   start_time <- Sys.time()
   url <- "https://phish.rmis.org/location"
 
@@ -57,6 +57,16 @@ get_location <- function(token=NA, ...) {
 
   # determine record count and number of pages needed
   totalcount <- suppressMessages(get_totalCount(token = token, ...))
+
+  if (totalcount == 0) {
+    message("No records found.")
+    return(data.frame()) # Returning an empty data frame if no records are found
+  }
+
+  if (only_count) {
+    # If only the count is requested, return here
+    return(totalcount)
+  }
 
   numberpages <- ceiling(totalcount / 1000)
 
