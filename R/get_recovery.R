@@ -6,10 +6,14 @@
 #' Querying 500k records would take a long time so ideally queries will be substantially smaller than that.
 #' If you reeeeaaaally want all 10 million + records you can loop this function by run year.
 #' @param token Character string api-key provided by RMPC.
+#' @param only_count Boolean. Returns record count
 #' @param ... Any RMIS recovery table field name (e.g. reporting_agency, species, run_year, etc.)
 #' @examples
 #' ## get chinook recovery for 1990 reported by ADFG of species 1
+#' \dontrun{
 #' adfg1990<-get_recovery(token="your-api-key", reporting_agency="ADFG", run_year=1990, species = 1)
+#' }
+
 
 get_recovery<-function(token=NA, only_count = FALSE, ...) {
 

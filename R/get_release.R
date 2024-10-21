@@ -3,10 +3,14 @@
 #' Any fields in the release table are passible through this function.
 #' Please review data documentation and understand data documentation before using this package.
 #' @param token Character string api-key provided by RMPC.
+#' @param only_count Boolean. Returns record count
 #' @param ... Any RMIS release table field name (e.g. reporting_agency, species, brood_year, etc.)
 #' @examples
 #' ## get chinook releases for 1990 reported by ADFG
+#' \dontrun{
 #' adfg1990<-get_release(token="your-api-key", reporting_agency="ADFG", brood_year=1990)
+#' }
+#'
 
 get_release<-function(token=NA, only_count = FALSE, ...) {
   start_time <- Sys.time()

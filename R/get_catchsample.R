@@ -4,11 +4,16 @@
 #' Please review data documentation and understand data documentation before using this package.
 #' The full table is nearly half a million rows (2024) so please limit your query to only needed data.
 #' @param token Character string api-key provided by RMPC.
+#' @param only_count Boolean. Returns record count
 #' @param ... Any RMIS catchsample table field name (e.g. reporting_agency, species, run_year, etc.)
 #' @examples
 #' ## get chinook catch samples for 1990 reported by ADFG of species 1
-#' adfg1990<-get_catchsample(token="your-api-key", reporting_agency="ADFG", catch_year=1990, species = 1)
-
+#' \dontrun{
+#' adfg1990<-get_catchsample(token="your-api-key",
+#'                           reporting_agency="ADFG",
+#'                           catch_year=1990,
+#'                           species = 1)
+#' }
 get_catchsample<-function(token=NA, only_count = FALSE, ...) {
   start_time <- Sys.time()
   url <- "https://phish.rmis.org/catchsample"
