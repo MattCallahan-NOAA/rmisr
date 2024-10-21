@@ -5,6 +5,7 @@
 #' @param token Character string api-key provided by RMPC.
 #' @param only_count Boolean. Returns record count
 #' @param ... Any RMIS release table field name (e.g. reporting_agency, species, brood_year, etc.)
+#' @export
 #' @examples
 #' ## get chinook releases for 1990 reported by ADFG
 #' \dontrun{

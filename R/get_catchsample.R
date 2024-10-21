@@ -3,6 +3,7 @@
 #' Any fields in the catchsample table are passible through this function.
 #' Please review data documentation and understand data documentation before using this package.
 #' The full table is nearly half a million rows (2024) so please limit your query to only needed data.
+#' @export
 #' @param token Character string api-key provided by RMPC.
 #' @param only_count Boolean. Returns record count
 #' @param ... Any RMIS catchsample table field name (e.g. reporting_agency, species, run_year, etc.)

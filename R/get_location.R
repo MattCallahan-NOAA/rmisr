@@ -5,6 +5,7 @@
 #' @param token Character string api-key provided by RMPC.
 #' @param only_count Boolean. Returns record count
 #' @param ... Any RMIS location table field name (e.g. reporting_agency, psc_basin, location_type, etc.)
+#' @export
 #' @examples
 #' ## get type 2  locations reported by ADFG
 #' \dontrun{
