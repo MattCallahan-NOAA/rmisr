@@ -20,20 +20,20 @@ get_catchsample<-function(token=NA, only_count = FALSE, ...) {
 
   get_totalCount <- function(token, ...) {
     query <- list(... = ...)
-    response <- GET(url, query = query, add_headers(xapikey = token))
+    response <- httr::GET(url, query = query, httr::add_headers(xapikey = token))
 
     # Check if the response has an error
-    if (http_error(response)) {
+    if (httr::http_error(response)) {
       # Extract and parse content from the response
-      content <- content(response, "text", encoding = "UTF-8")
-      error_info <- fromJSON(content)
+      content <- httr::content(response, "text", encoding = "UTF-8")
+      error_info <- jsonlite::fromJSON(content)
       # Extract only the main error message
       main_error_message <- error_info$message
       # Suppress fxn info printing when stop
       stop(main_error_message, call. = FALSE)
     } else {
       # Extract totalCount if no error
-      return(content(response)$totalCount)
+      return(httr::content(response)$totalCount)
     }
   }
 
@@ -41,13 +41,13 @@ get_catchsample<-function(token=NA, only_count = FALSE, ...) {
   #function to pull by page 1000 records at time
   get_by_page <- function(token = NA, page = 1, ...) {
     query <- list(page = page, perpage = 1000, ... = ...)
-    response <- GET(url, query = query, add_headers(xapikey = token))
+    response <- httr::GET(url, query = query, httr::add_headers(xapikey = token))
 
     # Check if the response has an error
-    if (http_error(response)) {
+    if (httr::http_error(response)) {
       # Extract and parse content from the response
-      content <- content(response, "text", encoding = "UTF-8")
-      error_info <- fromJSON(content)
+      content <- httr::content(response, "text", encoding = "UTF-8")
+      error_info <- jsonlite::fromJSON(content)
 
       # Extract only the main error message
       main_error_message <- error_info$message
@@ -55,8 +55,8 @@ get_catchsample<-function(token=NA, only_count = FALSE, ...) {
       stop(main_error_message, call. = FALSE)
     } else {
       # Process the successful response
-      fromJSON(content(response, type = "text"))$records %>%
-        bind_rows()
+      jsonlite::fromJSON(httr::content(response, type = "text"))$records %>%
+        dplyr::bind_rows()
     }
   }
 
