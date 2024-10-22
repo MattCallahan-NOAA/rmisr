@@ -3,32 +3,38 @@
 #' Any fields in the catchsample table are passible through this function.
 #' Please review data documentation and understand data documentation before using this package.
 #' The full table is nearly half a million rows (2024) so please limit your query to only needed data.
+#' @export
 #' @param token Character string api-key provided by RMPC.
+#' @param only_count Boolean. Returns record count
 #' @param ... Any RMIS catchsample table field name (e.g. reporting_agency, species, run_year, etc.)
 #' @examples
 #' ## get chinook catch samples for 1990 reported by ADFG of species 1
-#' adfg1990<-get_catchsample(token="your-api-key", reporting_agency="ADFG", catch_year=1990, species = 1)
-
+#' \dontrun{
+#' adfg1990<-get_catchsample(token="your-api-key",
+#'                           reporting_agency="ADFG",
+#'                           catch_year=1990,
+#'                           species = 1)
+#' }
 get_catchsample<-function(token=NA, only_count = FALSE, ...) {
   start_time <- Sys.time()
   url <- "https://phish.rmis.org/catchsample"
 
   get_totalCount <- function(token, ...) {
     query <- list(... = ...)
-    response <- GET(url, query = query, add_headers(xapikey = token))
+    response <- httr::GET(url, query = query, httr::add_headers(xapikey = token))
 
     # Check if the response has an error
-    if (http_error(response)) {
+    if (httr::http_error(response)) {
       # Extract and parse content from the response
-      content <- content(response, "text", encoding = "UTF-8")
-      error_info <- fromJSON(content)
+      content <- httr::content(response, "text", encoding = "UTF-8")
+      error_info <- jsonlite::fromJSON(content)
       # Extract only the main error message
       main_error_message <- error_info$message
       # Suppress fxn info printing when stop
       stop(main_error_message, call. = FALSE)
     } else {
       # Extract totalCount if no error
-      return(content(response)$totalCount)
+      return(httr::content(response)$totalCount)
     }
   }
 
@@ -36,13 +42,13 @@ get_catchsample<-function(token=NA, only_count = FALSE, ...) {
   #function to pull by page 1000 records at time
   get_by_page <- function(token = NA, page = 1, ...) {
     query <- list(page = page, perpage = 1000, ... = ...)
-    response <- GET(url, query = query, add_headers(xapikey = token))
+    response <- httr::GET(url, query = query, httr::add_headers(xapikey = token))
 
     # Check if the response has an error
-    if (http_error(response)) {
+    if (httr::http_error(response)) {
       # Extract and parse content from the response
-      content <- content(response, "text", encoding = "UTF-8")
-      error_info <- fromJSON(content)
+      content <- httr::content(response, "text", encoding = "UTF-8")
+      error_info <- jsonlite::fromJSON(content)
 
       # Extract only the main error message
       main_error_message <- error_info$message
@@ -50,8 +56,8 @@ get_catchsample<-function(token=NA, only_count = FALSE, ...) {
       stop(main_error_message, call. = FALSE)
     } else {
       # Process the successful response
-      fromJSON(content(response, type = "text"))$records %>%
-        bind_rows()
+      jsonlite::fromJSON(httr::content(response, type = "text"))$records %>%
+        dplyr::bind_rows()
     }
   }
 
