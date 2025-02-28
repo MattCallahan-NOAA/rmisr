@@ -1,24 +1,26 @@
 #' get_release
 #' @description This function pulls release data from the RMIS database.
-#' Any fields in the release table are passible through this function.
+#' Any fields in the release table are passable through this function.
 #' Please review data documentation and understand data documentation before using this package.
 #' @param token Character string api-key provided by RMPC.
 #' @param only_count Boolean. Returns record count
+#' @param mquery List. A query built in the mget_release wrapper function.
 #' @param ... Any RMIS release table field name (e.g. reporting_agency, species, brood_year, etc.)
 #' @export
 #' @examples
 #' ## get chinook releases for 1990 reported by ADFG
 #' \dontrun{
-#' adfg1990<-get_release(token="your-api-key", reporting_agency="ADFG", brood_year=1990)
+#' adfg1990<-get_release(token="your-api-key", mquery=NULL, reporting_agency="ADFG", brood_year=1990)
 #' }
 #'
 
-get_release<-function(token=NA, only_count = FALSE, ...) {
+get_release<-function(token=NA, only_count = FALSE, mquery=NULL, ...) {
   start_time <- Sys.time()
   url <- "https://phish.rmis.org/release"
 
   get_totalCount <- function(token, ...) {
     query <- list(... = ...)
+    if(!is.null(mquery)) {query <- c(query, mquery)}
     response <- httr::GET(url, query = query, httr::add_headers(xapikey = token))
 
     # Check if the response has an error
@@ -38,8 +40,9 @@ get_release<-function(token=NA, only_count = FALSE, ...) {
 
 
   #function to pull by page 1000 records at time
-  get_by_page <- function(token = NA, page = 1, ...) {
+  get_by_page <- function(token = NA, page = 1, mquery=NULL, ...) {
     query <- list(page = page, perpage = 1000, ... = ...)
+    if(!is.null(mquery)) {query <- c(query, mquery)}
     response <- httr::GET(url, query = query, httr::add_headers(xapikey = token))
 
     # Check if the response has an error
@@ -78,9 +81,14 @@ get_release<-function(token=NA, only_count = FALSE, ...) {
   message(paste0("Downloading ", totalcount, " records"))
 
   # apply the api pull function across the number of pages
-  data <- suppressMessages(lapply(1:numberpages, FUN=function(x) {get_by_page(token=token,
-                                                                              page=x,
-                                                                              ...)})%>%dplyr::bind_rows())
+  data <- suppressMessages(lapply(1:numberpages, FUN = function(x) {
+    get_by_page(
+      token = token,
+      page = x,
+      mquery = mquery,
+      ...
+    )
+  }) %>% dplyr::bind_rows())
   # time
   end_time <- Sys.time()
   message(paste("Time Elapsed:", round(end_time - start_time, 2),

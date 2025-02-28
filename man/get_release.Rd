@@ -4,24 +4,26 @@
 \alias{get_release}
 \title{get_release}
 \usage{
-get_release(token = NA, only_count = FALSE, ...)
+get_release(token = NA, only_count = FALSE, mquery = NULL, ...)
 }
 \arguments{
 \item{token}{Character string api-key provided by RMPC.}
 
 \item{only_count}{Boolean. Returns record count}
 
+\item{mquery}{List. A query built in the mget_release wrapper function.}
+
 \item{...}{Any RMIS release table field name (e.g. reporting_agency, species, brood_year, etc.)}
 }
 \description{
 This function pulls release data from the RMIS database.
-Any fields in the release table are passible through this function.
+Any fields in the release table are passable through this function.
 Please review data documentation and understand data documentation before using this package.
 }
 \examples{
 ## get chinook releases for 1990 reported by ADFG
 \dontrun{
-adfg1990<-get_release(token="your-api-key", reporting_agency="ADFG", brood_year=1990)
+adfg1990<-get_release(token="your-api-key", mquery=NULL, reporting_agency="ADFG", brood_year=1990)
 }
 
 }
