@@ -6,7 +6,7 @@
 
 This package provides functions to download data from the [RMIS
 api](https://github.com/PSMFC-Streamnet-RMPC/api-docs) . Data
-documentation can be found here (what is the best link?) and users
+documentation can be found [here](https://www.rmpc.org/wp-content/uploads/2023/11/Specification-V4.2-2023-12.pdf) and users
 should be familiar with data structure before attempting to download it.
 Each function pulls data from a different RMIS table. An api key is
 required for use and other function arguments will be passed to the api
